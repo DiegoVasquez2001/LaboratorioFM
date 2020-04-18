@@ -5,6 +5,12 @@
  */
 package Presentacion;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author diego
@@ -54,15 +60,35 @@ public class FrmMantCat extends javax.swing.JInternalFrame {
 
         jButton1.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jButton1.setText("Alta");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jButton2.setText("Baja");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         Cambio.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         Cambio.setText("Cambio");
+        Cambio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CambioActionPerformed(evt);
+            }
+        });
 
         jButton4.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jButton4.setText("Buscar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel3.setText("Buscar Categoría:");
@@ -144,6 +170,76 @@ public class FrmMantCat extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try{
+            Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("insert into categoria values(?,?)");
+            
+            pst.setString(1, "0");
+            pst.setString(2, txtcat.getText().trim());
+            pst.executeUpdate();
+            
+            txtcat.setText("");
+            JOptionPane.showMessageDialog(null, "REGISTRO REALIZADO");
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+             Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("delete from autor where id_categoria = ?");
+            
+            pst.setString(1, txtbxc.getText().trim());
+            pst.executeUpdate();
+            
+            txtcat.setText("");
+            txtbxc.setText("");
+            
+            JOptionPane.showMessageDialog(null, "REGISTRO REALIZADO");
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void CambioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CambioActionPerformed
+        try {
+            String ID = txtbxc.getText().trim();
+            
+            Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("update categoria set categoria_desc = ? where id_categoria = " + ID);
+            
+            pst.setString(1, txtcat.getText().trim());
+            pst.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "REGISTRO REALIZADO");
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_CambioActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+       try{
+            Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("select * from categoria where id_categoria = ?");
+            pst.setString(1, txtbxc.getText().trim());
+            
+            ResultSet rs = pst.executeQuery();
+            
+            if(rs.next()){
+                txtcat.setText(rs.getString("categoria_desc"));
+            } else {
+                JOptionPane.showMessageDialog(null, "Categoría No Registrado");
+            }
+            
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

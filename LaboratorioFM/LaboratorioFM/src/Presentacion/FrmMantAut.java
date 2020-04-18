@@ -5,6 +5,12 @@
  */
 package Presentacion;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author diego
@@ -55,20 +61,45 @@ public class FrmMantAut extends javax.swing.JInternalFrame {
 
         jButton1.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jButton1.setText("Alta");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jButton2.setText("Baja");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         Cambio.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         Cambio.setText("Cambio");
+        Cambio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CambioActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel3.setText("Buscar Autor:");
 
         txtbxc.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        txtbxc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtbxcActionPerformed(evt);
+            }
+        });
 
         jButton4.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jButton4.setText("Buscar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel4.setText("Nacionalidad:");
@@ -157,6 +188,85 @@ public class FrmMantAut extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try{
+            Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("insert into autor values(?,?,?)");
+            
+            pst.setString(1, "0");
+            pst.setString(2, txtautor.getText().trim());
+            pst.setString(3, txtnac.getText().trim());
+            pst.executeUpdate();
+            
+            txtautor.setText("");
+            txtnac.setText("");
+            JOptionPane.showMessageDialog(null, "REGISTRO REALIZADO");
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+             Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("delete from autor where id_autor = ?");
+            
+            pst.setString(1, txtbxc.getText().trim());
+            pst.executeUpdate();
+            
+            txtautor.setText("");
+            txtnac.setText("");
+            txtbxc.setText("");
+            
+            JOptionPane.showMessageDialog(null, "REGISTRO REALIZADO");
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void CambioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CambioActionPerformed
+        try {
+            String ID = txtbxc.getText().trim();
+            
+            Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("update autor set nombre_autor = ?, nacionalidad_autor = ? where id_autor = " + ID);
+            
+            pst.setString(1, txtautor.getText().trim());
+            pst.setString(2, txtnac.getText().trim());
+            pst.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "REGISTRO REALIZADO");
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_CambioActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        try{
+            Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/db_film_magic", "root", "informaticdv2016");
+            PreparedStatement pst = cn.prepareStatement("select * from autor where id_autor = ?");
+            pst.setString(1, txtbxc.getText().trim());
+            
+            ResultSet rs = pst.executeQuery();
+            
+            if(rs.next()){
+                txtautor.setText(rs.getString("nombre_autor"));
+                txtnac.setText(rs.getString("nacionalidad_autor"));
+            } else {
+                JOptionPane.showMessageDialog(null, "Autor No Registrado");
+            }
+            
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void txtbxcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbxcActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtbxcActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
